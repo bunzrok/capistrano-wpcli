@@ -78,7 +78,11 @@ namespace :wpcli do
         on roles(:dev) do
           within fetch(:dev_path) do
             execute :wp, :db, :export, "- |", :gzip, ">", fetch(:wpcli_local_db_file)
-            download! fetch(:wpcli_local_db_file), fetch(:wpcli_local_db_file)
+            if fetch(:remote_tmp_path)
+              download! fetch(:wpcli_local_db_file), fetch(:remote_tmp_path)
+            else
+              download! fetch(:wpcli_local_db_file), fetch(:wpcli_local_db_file)
+            end
           end
         end
       else
