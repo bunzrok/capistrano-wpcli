@@ -25,9 +25,6 @@ namespace :load do
     # Temporary db dumps path
     set :wpcli_remote_db_file, -> {"#{fetch(:tmp_dir)}/wpcli_database.sql.gz"}
     set :wpcli_local_db_file, -> {"#{fetch(:local_tmp_dir)}/wpcli_database.sql.gz"}
-    if fetch(:dev_tmp_path)
-      set :wpcli_local_vm_db_file, -> {"#{fetch(:dev_tmp_path)}/wpcli_database.sql.gz"}
-    end
 
     # Backup file filename
     set :wpcli_local_db_backup_filename, -> {"db_#{fetch(:stage)}_#{fetch(:current_time)}.sql.gz"}
@@ -81,11 +78,7 @@ namespace :wpcli do
         on roles(:dev) do
           within fetch(:dev_path) do
             execute :wp, :db, :export, "- |", :gzip, ">", fetch(:wpcli_local_db_file)
-            if fetch(:wpcli_local_vm_db_file)
-              download! fetch(:wpcli_local_db_file), fetch(:wpcli_local_vm_db_file)
-            else
               download! fetch(:wpcli_local_db_file), fetch(:wpcli_local_db_file)
-            end
           end
         end
       else
